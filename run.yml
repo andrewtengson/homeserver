@@ -51,6 +51,9 @@
           TZ: "{{ timezone }}"
           PUID: "{{ container_user.uid }}"
           PGID: "{{ container_user.group }}"
+          USER: "{{ ansible_user }}"
+          PASS: "{{ transmission_password }}"
+          UMASK: "002"
       tags:
         - transmission
         - podman
