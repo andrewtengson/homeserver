@@ -1,0 +1,19 @@
+---
+- name: Create the user
+  ansible.builtin.user:
+    name: "{{ user }}"
+    state: present
+  register: container_user
+
+- name: Add ansible_user to group
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    state: present
+    groups:
+      - "{{ user }}"
+    append: true
+
+- name: Enable loginctl linger
+  ansible.builtin.command:
+    cmd: "loginctl enable-linger {{ user }}"
+    creates: "/var/lib/systemd/linger/{{ user }}"

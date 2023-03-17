@@ -1,0 +1,22 @@
+---
+- name: Chown the repo
+  ansible.builtin.file:
+    path: "{{ dotfiles_path }}"
+    recurse: true
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: Clone the latest dotfiles repo
+  become: false
+  ansible.builtin.git:
+    repo: "{{ dotfiles_repo }}"
+    dest: "{{ dotfiles_path }}"
+    force: true
+
+- name: Run dotfiles setup.sh
+  become: false
+  ansible.builtin.command:
+    cmd: "{{ dotfiles_path }}/setup.sh"
+    chdir: "{{ dotfiles_path }}"
+    creates: "/home/{{ ansible_user }}/.zshrc"

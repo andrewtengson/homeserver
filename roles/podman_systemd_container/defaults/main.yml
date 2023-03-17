@@ -1,0 +1,17 @@
+required_vars:
+  - user
+  - container_name
+  - container_image
+
+# required
+user: ""
+container_name: ""
+container_image: ""
+
+# optional
+published_ports: []
+group_add: []
+devices: []
+volumes: []
+shared_volumes: []
+env: {}

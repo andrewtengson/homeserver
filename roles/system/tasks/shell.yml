@@ -1,0 +1,5 @@
+---
+- name: Change user shell
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    shell: "{{ shell }}"

@@ -1,0 +1,16 @@
+---
+- name: Check required variables
+  ansible.builtin.fail:
+    msg: "Variable '{{ item }}' is not defined"
+  when: lookup('ansible.builtin.vars', item) == ""
+  loop: "{{ required_vars }}"
+
+- name: Log container name
+  ansible.builtin.debug:
+    msg: "Installing podman systemd container for {{ container_name }}"
+
+- name: Include user task
+  ansible.builtin.include_tasks: user.yml
+
+- name: Include install task
+  ansible.builtin.include_tasks: install.yml

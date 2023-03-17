@@ -1,0 +1,58 @@
+---
+- hosts: all
+  become: true
+  roles:
+    - role: system
+      tags:
+        - system
+
+    - name: Jellyfin podman container
+      role: podman_systemd_container
+      vars:
+        user: jellyfin
+        container_name: jellyfin
+        container_image: docker.io/jellyfin/jellyfin:latest
+        published_ports:
+          - 8096:8096
+        group_add:
+          - "{{ render_group }}"
+        devices:
+          - /dev/dri/renderD128:/dev/dri/renderD128
+        volumes:
+          - "{{ storage_dir }}/jellyfin/cache:/cache"
+          - "{{ storage_dir }}/jellyfin/config:/config"
+        shared_volumes:
+          - "{{ storage_dir }}/media/movies:/media/movies"
+          - "{{ storage_dir }}/media/anime:/media/anime"
+          - "{{ storage_dir }}/media/shows:/media/shows"
+        env:
+          TZ: "{{ timezone }}"
+          PUID: "{{ container_user.uid }}"
+          PGID: "{{ container_user.group }}"
+      tags:
+        - jellyfin
+        - podman
+
+    - name: Transmission podman container
+      role: podman_systemd_container
+      vars:
+        user: transmission
+        container_name: transmission
+        container_image: lscr.io/linuxserver/transmission:latest
+        published_ports:
+          - 9091:9091
+        group_add: []
+        devices: []
+        volumes:
+          - "{{ storage_dir }}/transmission/config:/config"
+          - "{{ storage_dir }}/transmission/downloads:/downloads"
+          - "{{ storage_dir }}/transmission/watch:/watch"
+        shared_volumes:
+          - "{{ storage_dir }}/media:/media"
+        env:
+          TZ: "{{ timezone }}"
+          PUID: "{{ container_user.uid }}"
+          PGID: "{{ container_user.group }}"
+      tags:
+        - transmission
+        - podman

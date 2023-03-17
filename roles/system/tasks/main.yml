@@ -1,0 +1,11 @@
+---
+- name: Include packages task
+  ansible.builtin.include_tasks: packages.yml
+- name: Include ssh task
+  ansible.builtin.include_tasks: ssh.yml
+- name: Include dotfiles task
+  ansible.builtin.include_tasks: dotfiles.yml
+- name: Include shell task
+  ansible.builtin.include_tasks: shell.yml
+- name: Include firewall task
+  ansible.builtin.include_tasks: firewall.yml

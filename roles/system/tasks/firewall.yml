@@ -1,0 +1,32 @@
+---
+- name: Allow inbound port 8096 for jellyfin
+  ansible.posix.firewalld:
+    state: enabled
+    zone: public
+    port: 8096/tcp
+    permanent: true
+    immediate: true
+
+- name: Allow inbound port 9091 for transmission-webui
+  ansible.posix.firewalld:
+    state: enabled
+    zone: public
+    port: 9091/tcp
+    permanent: true
+    immediate: true
+
+- name: Allow inbound dns service for adguardhome
+  ansible.posix.firewalld:
+    state: enabled
+    zone: public
+    service: dns
+    permanent: true
+    immediate: true
+
+- name: Allow inbound port 3000 for adguardhome-webui
+  ansible.posix.firewalld:
+    state: enabled
+    zone: public
+    port: 3000/tcp
+    permanent: true
+    immediate: true

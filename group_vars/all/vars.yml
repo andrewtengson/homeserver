@@ -1,0 +1,30 @@
+locale: en_US.UTF-8
+
+timezone: Asia/Manila
+
+shell: /usr/bin/zsh
+
+dotfiles_repo: https://github.com/andrewtengson/dotfiles
+
+dotfiles_path: /home/{{ ansible_user }}/Documents/projects/dotfiles
+
+packages:
+  - zsh
+  - xsel
+  - git
+  - neofetch
+  - neovim
+  - tmux
+  - nodejs
+  - npm
+  - go
+  - rust
+  - htop
+  - lm_sensors
+  - lsof
+  - podman
+  - podman-compose
+
+render_group: 991
+
+storage_dir: /mnt/hdd
