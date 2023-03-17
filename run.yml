@@ -22,9 +22,7 @@
           - "{{ storage_dir }}/jellyfin/cache:/cache"
           - "{{ storage_dir }}/jellyfin/config:/config"
         shared_volumes:
-          - "{{ storage_dir }}/media/movies:/media/movies"
-          - "{{ storage_dir }}/media/anime:/media/anime"
-          - "{{ storage_dir }}/media/shows:/media/shows"
+          - "{{ storage_dir }}/media:/media"
         env:
           TZ: "{{ timezone }}"
           PUID: "{{ container_user.uid }}"
