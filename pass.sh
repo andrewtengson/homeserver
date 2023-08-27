@@ -1,3 +1,3 @@
 #!/bin/bash
 
-pass home-server/ansible-vault
+pass home-server/ansible-vault/pass
