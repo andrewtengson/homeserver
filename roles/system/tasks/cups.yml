@@ -1,0 +1,11 @@
+---
+- name: Install CUPS
+  community.general.pacman:
+    name: cups
+    state: present
+
+- name: Enable and start CUPS
+  ansible.builtin.service:
+    name: cups
+    enabled: true
+    state: started

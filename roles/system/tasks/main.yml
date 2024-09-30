@@ -9,3 +9,5 @@
   ansible.builtin.include_tasks: shell.yml
 - name: Include firewall task
   ansible.builtin.include_tasks: firewall.yml
+- name: Include cups task
+  ansible.builtin.include_tasks: cups.yml
