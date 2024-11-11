@@ -9,7 +9,6 @@
     - name: Jellyfin podman container
       role: podman_systemd_container
       vars:
-        user: jellyfin
         container_name: jellyfin
         container_image: docker.io/jellyfin/jellyfin:latest
         published_ports:
@@ -25,34 +24,179 @@
           - "{{ storage_dir }}/media:/media"
         env:
           TZ: "{{ timezone }}"
-          PUID: "{{ container_user.uid }}"
-          PGID: "{{ container_user.group }}"
+          PUID: "{{ uid }}"
+          PGID: "{{ gid }}"
+        network: mediarr
+        network_aliases:
+          - jellyfin
       tags:
         - jellyfin
         - podman
 
-    - name: Transmission podman container
+    - name: Qbittorrent podman container
       role: podman_systemd_container
       vars:
-        user: transmission
-        container_name: transmission
-        container_image: lscr.io/linuxserver/transmission:latest
+        container_name: qbittorrent
+        container_image: lscr.io/linuxserver/qbittorrent:latest
         published_ports:
-          - 9091:9091
-        group_add: []
-        devices: []
+          - 8080:8080
+          - 6881:6881
         volumes:
-          - "{{ storage_dir }}/transmission/config:/config"
-          - "{{ storage_dir }}/transmission/downloads:/downloads"
-          - "{{ storage_dir }}/transmission/watch:/watch"
+          - "{{ storage_dir }}/mediarr/qbittorrent:/config"
         shared_volumes:
-          - "{{ storage_dir }}/media:/media"
+          - "{{ storage_dir }}/media:/mnt/media"
+          - "{{ storage_dir }}/downloads:/mnt/downloads"
         env:
           TZ: "{{ timezone }}"
-          PUID: "{{ container_user.uid }}"
-          PGID: "{{ container_user.group }}"
-          USER: "{{ ansible_user }}"
-          PASS: "{{ transmission_password }}"
+          PUID: "{{ uid }}"
+          PGID: "{{ gid }}"
+          WEBUI_PORT: 8080
+        network: mediarr
+        network_aliases:
+          - qbittorrent
       tags:
-        - transmission
+        - qbittorrent
+        - podman
+
+    - name: Jellyseer podman container
+      role: podman_systemd_container
+      vars:
+        container_name: jellyseer
+        container_image: fallenbagel/jellyseerr:latest
+        published_ports:
+          - 5055:5055
+        volumes:
+          - "{{ storage_dir }}/mediarr/jellyseer:/app/config"
+        env:
+          TZ: "{{ timezone }}"
+        network: mediarr
+        network_aliases:
+          - jellyseer
+      tags:
+        - jellyseer
+        - podman
+
+    - name: Bazaar podman container
+      role: podman_systemd_container
+      vars:
+        container_name: bazaar
+        container_image: lscr.io/linuxserver/bazarr:latest
+        published_ports:
+          - 6767:6767
+        volumes:
+          - "{{ storage_dir }}/mediarr/bazaar:/config"
+        shared_volumes:
+          - "{{ storage_dir }}/media:/mnt/media"
+        env:
+          TZ: "{{ timezone }}"
+          PUID: "{{ uid }}"
+          PGID: "{{ gid }}"
+        network: mediarr
+        network_aliases:
+          - bazarr
+      tags:
+        - bazaar
+        - podman
+
+    - name: Prowlarr podman container
+      role: podman_systemd_container
+      vars:
+        container_name: prowlarr
+        container_image: lscr.io/linuxserver/prowlarr:latest
+        published_ports:
+          - 9696:9696
+        volumes:
+          - "{{ storage_dir }}/mediarr/prowlarr:/config"
+        env:
+          TZ: "{{ timezone }}"
+          PUID: "{{ uid }}"
+          PGID: "{{ gid }}"
+        network: mediarr
+        network_aliases:
+          - prowlarr
+      tags:
+        - prowlarr
+        - podman
+
+    - name: Flaresolverr podman container
+      role: podman_systemd_container
+      vars:
+        container_name: flaresolverr
+        container_image: ghcr.io/flaresolverr/flaresolverr:latest
+        env:
+          TZ: "{{ timezone }}"
+        network: mediarr
+        network_aliases:
+          - flaresolverr
+      tags:
+        - flaresolverr
+        - podman
+
+    - name: Radarr podman container
+      role: podman_systemd_container
+      vars:
+        container_name: radarr
+        container_image: lscr.io/linuxserver/radarr:latest
+        published_ports:
+          - 7878:7878
+        volumes:
+          - "{{ storage_dir }}/mediarr/radarr:/config"
+        shared_volumes:
+          - "{{ storage_dir }}/media:/mnt/media"
+          - "{{ storage_dir }}/downloads:/mnt/downloads"
+        env:
+          TZ: "{{ timezone }}"
+          PUID: "{{ uid }}"
+          PGID: "{{ gid }}"
+        network: mediarr
+        network_aliases:
+          - radarr
+      tags:
+        - radarr
+        - podman
+
+    - name: Readarr podman container
+      role: podman_systemd_container
+      vars:
+        container_name: readarr
+        container_image: lscr.io/linuxserver/readarr:develop
+        published_ports:
+          - 8787:8787
+        volumes:
+          - "{{ storage_dir }}/mediarr/readarr:/config"
+        shared_volumes:
+          - "{{ storage_dir }}/media:/mnt/media"
+          - "{{ storage_dir }}/downloads:/mnt/downloads"
+        env:
+          TZ: "{{ timezone }}"
+          PUID: "{{ uid }}"
+          PGID: "{{ gid }}"
+        network: mediarr
+        network_aliases:
+          - readarr
+      tags:
+        - readarr
+        - podman
+
+    - name: Sonarr podman container
+      role: podman_systemd_container
+      vars:
+        container_name: sonarr
+        container_image: lscr.io/linuxserver/sonarr:latest
+        published_ports:
+          - 8989:8989
+        volumes:
+          - "{{ storage_dir }}/mediarr/sonarr:/config"
+        shared_volumes:
+          - "{{ storage_dir }}/media:/mnt/media"
+          - "{{ storage_dir }}/downloads:/mnt/downloads"
+        env:
+          TZ: "{{ timezone }}"
+          PUID: "{{ uid }}"
+          PGID: "{{ gid }}"
+        network: mediarr
+        network_aliases:
+          - sonarr
+      tags:
+        - sonarr
         - podman

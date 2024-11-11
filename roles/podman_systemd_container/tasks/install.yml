@@ -2,23 +2,23 @@
 - name: Create bind mount directories
   ansible.builtin.file:
     path: "{{ item | split(':') | first }}"
-    owner: "{{ user }}"
-    group: "{{ user }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
     state: directory
     mode: "755"
   loop: "{{ volumes | default('[]') }}"
 
 - name: Create user systemd directory
-  become_user: "{{ user }}"
+  become: false
   ansible.builtin.file:
     path: ~/.config/systemd/user
     state: directory
-    owner: "{{ user }}"
-    group: "{{ user }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
     mode: "755"
 
 - name: Create podman container
-  become_user: "{{ user }}"
+  become: false
   containers.podman.podman_container:
     state: created
     name: "{{ container_name }}"
@@ -29,13 +29,21 @@
     device: "{{ devices | default(omit) }}"
     group_add: "{{ group_add | default(omit) }}"
     env: "{{ env | default(omit) }}"
+    requires: "{{ requires | default(omit) }}"
+    network: "{{ network | default(omit) }}"
+    network_aliases: "{{ network_aliases | default(omit) }}"
+    userns: "{{ userns | default(omit) }}"
     generate_systemd:
       path: ~/.config/systemd/user
       restart_policy: always
       no_header: true
 
+- name: Pause for 10 secs
+  ansible.builtin.pause:
+    seconds: 10
+
 - name: Enable and start container on systemd
-  become_user: "{{ user }}"
+  become: false
   ansible.builtin.systemd:
     name: "container-{{ container_name }}"
     state: started

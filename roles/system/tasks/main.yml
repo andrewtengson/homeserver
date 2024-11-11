@@ -11,3 +11,5 @@
   ansible.builtin.include_tasks: firewall.yml
 - name: Include cups task
   ansible.builtin.include_tasks: cups.yml
+- name: Include podman network task
+  ansible.builtin.include_tasks: podman_network.yml

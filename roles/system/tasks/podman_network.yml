@@ -1,0 +1,4 @@
+- name: Create a podman network
+  become: false
+  containers.podman.podman_network:
+    name: mediarr

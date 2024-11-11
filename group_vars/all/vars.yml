@@ -8,6 +8,9 @@ dotfiles_repo: https://github.com/andrewtengson/dotfiles
 
 dotfiles_path: /home/{{ ansible_user }}/Documents/projects/dotfiles
 
+uid: 0
+gid: 0
+
 packages:
   - zsh
   - xsel

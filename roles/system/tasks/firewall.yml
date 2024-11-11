@@ -15,6 +15,78 @@
     permanent: true
     immediate: true
 
+- name: Allow inbound port 6767 for bazarr
+  ansible.posix.firewalld:
+    state: enabled
+    zone: public
+    port: 6767/tcp
+    permanent: true
+    immediate: true
+
+- name: Allow inbound port 5055 for jellyseer
+  ansible.posix.firewalld:
+    state: enabled
+    zone: public
+    port: 5055/tcp
+    permanent: true
+    immediate: true
+
+- name: Allow inbound port 9696 for prowlarr
+  ansible.posix.firewalld:
+    state: enabled
+    zone: public
+    port: 9696/tcp
+    permanent: true
+    immediate: true
+
+- name: Allow inbound port 8080 for qbittorrent-webui
+  ansible.posix.firewalld:
+    state: enabled
+    zone: public
+    port: 8080/tcp
+    permanent: true
+    immediate: true
+
+- name: Allow inbound port 6881 for qbittorrent-tcp
+  ansible.posix.firewalld:
+    state: enabled
+    zone: public
+    port: 6881/tcp
+    permanent: true
+    immediate: true
+
+- name: Allow inbound port 6881 for qbittorrent-udp
+  ansible.posix.firewalld:
+    state: enabled
+    zone: public
+    port: 6881/udp
+    permanent: true
+    immediate: true
+
+- name: Allow inbound port 7878 for radarr
+  ansible.posix.firewalld:
+    state: enabled
+    zone: public
+    port: 7878/tcp
+    permanent: true
+    immediate: true
+
+- name: Allow inbound port 8787 for readarr
+  ansible.posix.firewalld:
+    state: enabled
+    zone: public
+    port: 8787/tcp
+    permanent: true
+    immediate: true
+
+- name: Allow inbound port 8989 for sonarr
+  ansible.posix.firewalld:
+    state: enabled
+    zone: public
+    port: 8989/tcp
+    permanent: true
+    immediate: true
+
 - name: Allow inbound dns service for adguardhome
   ansible.posix.firewalld:
     state: enabled

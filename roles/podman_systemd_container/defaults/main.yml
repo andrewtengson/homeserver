@@ -1,10 +1,8 @@
 required_vars:
-  - user
   - container_name
   - container_image
 
 # required
-user: ""
 container_name: ""
 container_image: ""
 
@@ -15,3 +13,4 @@ devices: []
 volumes: []
 shared_volumes: []
 env: {}
+requires: []
