@@ -13,3 +13,5 @@
   ansible.builtin.include_tasks: cups.yml
 - name: Include podman network task
   ansible.builtin.include_tasks: podman_network.yml
+- name: Include network wait service
+  ansible.builtin.include_tasks: network_wait_service.yml

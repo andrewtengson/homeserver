@@ -37,6 +37,10 @@
       path: ~/.config/systemd/user
       restart_policy: always
       no_header: true
+      after:
+        - network-wait.target
+      wants:
+        - network-wait.target
 
 - name: Pause for 10 secs
   ansible.builtin.pause:
