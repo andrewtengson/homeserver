@@ -200,3 +200,21 @@
       tags:
         - sonarr
         - podman
+
+    - name: Homearr podman container
+      role: podman_systemd_container
+      vars:
+        container_name: homearr
+        container_image: ghcr.io/ajnart/homarr:latest
+        published_ports:
+          - 7575:7575
+        volumes:
+          - "{{ storage_dir }}/mediarr/homearr/configs:/app/data/configs"
+          - "{{ storage_dir }}/mediarr/homearr/icons:/app/public/icons"
+          - "{{ storage_dir }}/mediarr/homearr/data:/data"
+        network: mediarr
+        network_aliases:
+          - homearr
+      tags:
+        - homearr
+        - podman

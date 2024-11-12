@@ -87,6 +87,14 @@
     permanent: true
     immediate: true
 
+- name: Allow inbound port 7575 for homearr
+  ansible.posix.firewalld:
+    state: enabled
+    zone: public
+    port: 7575/tcp
+    permanent: true
+    immediate: true
+
 - name: Allow inbound dns service for adguardhome
   ansible.posix.firewalld:
     state: enabled
