@@ -33,6 +33,7 @@
     network: "{{ network | default(omit) }}"
     network_aliases: "{{ network_aliases | default(omit) }}"
     userns: "{{ userns | default(omit) }}"
+    cmd_args: "{{ cmd_args | default(omit) }}"
     generate_systemd:
       path: ~/.config/systemd/user
       restart_policy: always

@@ -118,3 +118,11 @@
     port: 631/tcp
     permanent: true
     immediate: true
+
+- name: Allow inbound port 3923 for copyparty
+  ansible.posix.firewalld:
+    state: enabled
+    zone: public
+    port: 3923/tcp
+    permanent: true
+    immediate: true

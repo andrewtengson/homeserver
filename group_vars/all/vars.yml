@@ -32,4 +32,4 @@ render_group: 991
 
 storage_dir: /mnt/hdd
 
-transmission_password: "{{ vault_transmission_password }}"
+copyparty_password: "{{ vault_copyparty_password }}"

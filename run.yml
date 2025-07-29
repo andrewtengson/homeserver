@@ -218,3 +218,24 @@
       tags:
         - homearr
         - podman
+
+    - name: Copyparty config
+      role: copyparty_config
+      vars:
+        copyparty_config_dir: "{{ storage_dir }}/copyparty/config"
+      tags:
+        - copyparty
+
+    - name: Copyparty podman container
+      role: podman_systemd_container
+      vars:
+        container_name: copyparty
+        container_image: copyparty/ac:latest
+        published_ports:
+          - 3923:3923
+        volumes:
+          - "{{ storage_dir }}:/w"
+          - "{{ storage_dir }}/copyparty/config:/cfg"
+      tags:
+        - copyparty
+        - podman
