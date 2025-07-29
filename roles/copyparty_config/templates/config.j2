@@ -1,7 +1,17 @@
 [accounts]
   {{ ansible_user }}: {{ copyparty_password }} 
 
-[/]
-  .
+[/media]
+  ./media
+  accs:
+    rwmda: {{ ansible_user }}
+
+[/downloads]
+  ./downloads
+  accs:
+    rwmda: {{ ansible_user }}
+
+[/data]
+  ./data
   accs:
     rwmda: {{ ansible_user }}
