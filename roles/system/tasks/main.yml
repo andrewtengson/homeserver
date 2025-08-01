@@ -1,4 +1,6 @@
 ---
+- name: Include storage validation task
+  ansible.builtin.include_tasks: storage_validation.yml
 - name: Include packages task
   ansible.builtin.include_tasks: packages.yml
 - name: Include ssh task

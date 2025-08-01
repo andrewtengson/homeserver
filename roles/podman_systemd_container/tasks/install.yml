@@ -17,6 +17,23 @@
     group: "{{ ansible_user }}"
     mode: "755"
 
+- name: Set healthcheck port if not explicitly defined
+  ansible.builtin.set_fact:
+    _healthcheck_port: "{{ published_ports[0] | regex_replace(':.*', '') if published_ports | length > 0 else '8080' }}"
+  when: healthcheck.enabled | bool
+
+- name: Set healthcheck command if not explicitly defined
+  ansible.builtin.set_fact:
+    _container_healthcheck_cmd: >-
+      {{
+        healthcheck.cmd if healthcheck.cmd != ""
+        else "(command -v curl >/dev/null && curl -f http://localhost:" + _healthcheck_port + ") ||
+              (command -v wget >/dev/null && wget -q --spider http://localhost:" + _healthcheck_port + ") ||
+              (command -v nc >/dev/null && nc -z localhost " + _healthcheck_port + ") ||
+              exit 1"
+      }}
+  when: healthcheck.enabled | bool
+
 - name: Create podman container
   become: false
   containers.podman.podman_container:
@@ -34,6 +51,12 @@
     network_aliases: "{{ network_aliases | default(omit) }}"
     userns: "{{ userns | default(omit) }}"
     command: "{{ command | default(omit) }}"
+    healthcheck: "{{ _container_healthcheck_cmd if healthcheck.enabled else omit }}"
+    healthcheck_interval: "{{ healthcheck.interval if healthcheck.enabled else omit }}"
+    healthcheck_timeout: "{{ healthcheck.timeout if healthcheck.enabled else omit }}"
+    healthcheck_retries: "{{ healthcheck.retries if healthcheck.enabled else omit }}"
+    healthcheck_start_period: "{{ healthcheck.start_period if healthcheck.enabled else omit }}"
+    healthcheck_failure_action: "{{ healthcheck.failure_action if healthcheck.enabled else omit }}"
     generate_systemd:
       path: ~/.config/systemd/user
       restart_policy: always

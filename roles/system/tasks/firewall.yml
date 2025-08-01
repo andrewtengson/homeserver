@@ -1,101 +1,6 @@
 ---
-- name: Allow inbound port 8096 for jellyfin
-  ansible.posix.firewalld:
-    state: enabled
-    zone: public
-    port: 8096/tcp
-    permanent: true
-    immediate: true
-
-- name: Allow inbound port 9091 for transmission-webui
-  ansible.posix.firewalld:
-    state: enabled
-    zone: public
-    port: 9091/tcp
-    permanent: true
-    immediate: true
-
-- name: Allow inbound port 6767 for bazarr
-  ansible.posix.firewalld:
-    state: enabled
-    zone: public
-    port: 6767/tcp
-    permanent: true
-    immediate: true
-
-- name: Allow inbound port 5055 for jellyseer
-  ansible.posix.firewalld:
-    state: enabled
-    zone: public
-    port: 5055/tcp
-    permanent: true
-    immediate: true
-
-- name: Allow inbound port 9696 for prowlarr
-  ansible.posix.firewalld:
-    state: enabled
-    zone: public
-    port: 9696/tcp
-    permanent: true
-    immediate: true
-
-- name: Allow inbound port 8080 for qbittorrent-webui
-  ansible.posix.firewalld:
-    state: enabled
-    zone: public
-    port: 8080/tcp
-    permanent: true
-    immediate: true
-
-- name: Allow inbound port 6881 for qbittorrent-tcp
-  ansible.posix.firewalld:
-    state: enabled
-    zone: public
-    port: 6881/tcp
-    permanent: true
-    immediate: true
-
-- name: Allow inbound port 6881 for qbittorrent-udp
-  ansible.posix.firewalld:
-    state: enabled
-    zone: public
-    port: 6881/udp
-    permanent: true
-    immediate: true
-
-- name: Allow inbound port 7878 for radarr
-  ansible.posix.firewalld:
-    state: enabled
-    zone: public
-    port: 7878/tcp
-    permanent: true
-    immediate: true
-
-- name: Allow inbound port 8787 for readarr
-  ansible.posix.firewalld:
-    state: enabled
-    zone: public
-    port: 8787/tcp
-    permanent: true
-    immediate: true
-
-- name: Allow inbound port 8989 for sonarr
-  ansible.posix.firewalld:
-    state: enabled
-    zone: public
-    port: 8989/tcp
-    permanent: true
-    immediate: true
-
-- name: Allow inbound port 7575 for homearr
-  ansible.posix.firewalld:
-    state: enabled
-    zone: public
-    port: 7575/tcp
-    permanent: true
-    immediate: true
-
-- name: Allow inbound dns service for adguardhome
+# Non-container services that need firewall rules
+- name: Allow inbound dns service for future adguardhome
   ansible.posix.firewalld:
     state: enabled
     zone: public
@@ -103,7 +8,7 @@
     permanent: true
     immediate: true
 
-- name: Allow inbound port 3000 for adguardhome-webui
+- name: Allow inbound port 3000 for future adguardhome-webui
   ansible.posix.firewalld:
     state: enabled
     zone: public
@@ -116,13 +21,5 @@
     state: enabled
     zone: public
     port: 631/tcp
-    permanent: true
-    immediate: true
-
-- name: Allow inbound port 3923 for copyparty
-  ansible.posix.firewalld:
-    state: enabled
-    zone: public
-    port: 3923/tcp
     permanent: true
     immediate: true

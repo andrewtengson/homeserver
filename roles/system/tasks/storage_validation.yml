@@ -1,0 +1,10 @@
+---
+- name: Check if storage directory exists
+  ansible.builtin.stat:
+    path: "{{ storage_dir }}"
+  register: storage_dir_stat
+
+- name: Fail if storage directory does not exist
+  ansible.builtin.fail:
+    msg: "Storage directory {{ storage_dir }} does not exist. Please ensure it is properly mounted."
+  when: not storage_dir_stat.stat.exists

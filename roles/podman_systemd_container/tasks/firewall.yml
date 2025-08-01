@@ -1,0 +1,18 @@
+---
+- name: Set firewall ports from published_ports if not explicitly defined
+  ansible.builtin.set_fact:
+    _container_firewall_ports: >-
+      {{
+        firewall_ports if firewall_ports | length > 0
+        else published_ports | map('regex_replace', '^([0-9]+):.*', '\1/tcp') | list
+      }}
+
+- name: Allow inbound ports for {{ container_name }}
+  ansible.posix.firewalld:
+    state: enabled
+    zone: public
+    port: "{{ item }}"
+    permanent: true
+    immediate: true
+  loop: "{{ _container_firewall_ports }}"
+  when: _container_firewall_ports | length > 0

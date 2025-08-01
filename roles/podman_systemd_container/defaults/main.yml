@@ -14,3 +14,13 @@ volumes: []
 shared_volumes: []
 env: {}
 requires: []
+firewall_ports: [] # if empty, will be auto-generated from published_ports
+enable_firewall: true # set to false to skip firewall configuration
+healthcheck: # Podman native healthcheck configuration
+  enabled: true
+  cmd: "" # healthcheck command (auto-generated if empty)
+  interval: 30s
+  timeout: 30s
+  retries: 3
+  start_period: 10s
+  failure_action: restart # none, kill, restart, stop

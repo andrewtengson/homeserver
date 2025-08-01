@@ -12,5 +12,9 @@
 - name: Include user task
   ansible.builtin.include_tasks: user.yml
 
+- name: Include firewall task
+  ansible.builtin.include_tasks: firewall.yml
+  when: enable_firewall | bool
+
 - name: Include install task
   ansible.builtin.include_tasks: install.yml
