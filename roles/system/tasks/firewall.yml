@@ -23,3 +23,11 @@
     port: 631/tcp
     permanent: true
     immediate: true
+
+- name: Allow inbound port 5353 for avahi
+  ansible.posix.firewalld:
+    state: enabled
+    zone: public
+    port: 5353/udp
+    permanent: true
+    immediate: true
