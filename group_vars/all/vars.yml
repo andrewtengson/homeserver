@@ -33,3 +33,7 @@ render_group: 991
 storage_dir: /mnt/hdd
 
 copyparty_password: "{{ vault_copyparty_password }}"
+
+openclaw_user: openclaw
+openclaw_home: /home/openclaw
+openclaw_enable_linger: true

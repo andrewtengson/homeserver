@@ -6,6 +6,11 @@
       tags:
         - system
 
+    - name: OpenClaw gateway
+      role: openclaw
+      tags:
+        - openclaw
+
     - name: Jellyfin podman container
       role: podman_systemd_container
       vars:

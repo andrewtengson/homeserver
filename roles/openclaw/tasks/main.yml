@@ -1,0 +1,20 @@
+---
+- name: Validate OpenClaw settings
+  ansible.builtin.assert:
+    that:
+      - openclaw_user | length > 0
+      - openclaw_home | length > 0
+    fail_msg: "OpenClaw variables are invalid"
+
+- name: Ensure OpenClaw user exists
+  ansible.builtin.user:
+    name: "{{ openclaw_user }}"
+    home: "{{ openclaw_home }}"
+    shell: /bin/bash
+    create_home: true
+    system: true
+
+- name: Enable linger for OpenClaw user
+  ansible.builtin.command: "loginctl enable-linger {{ openclaw_user }}"
+  when: openclaw_enable_linger | bool
+  changed_when: false
