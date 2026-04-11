@@ -31,6 +31,14 @@
           TZ: "{{ timezone }}"
           PUID: "{{ uid }}"
           PGID: "{{ gid }}"
+        healthcheck:
+          enabled: true
+          cmd: "curl -f http://localhost:8096/health"
+          interval: 30s
+          timeout: 30s
+          retries: 3
+          start_period: 5m
+          failure_action: restart
         network: mediarr
         network_aliases:
           - jellyfin
@@ -100,6 +108,13 @@
           TZ: "{{ timezone }}"
           PUID: "{{ uid }}"
           PGID: "{{ gid }}"
+        healthcheck:
+          enabled: true
+          interval: 30s
+          timeout: 30s
+          retries: 3
+          start_period: 2m
+          failure_action: restart
         network: mediarr
         network_aliases:
           - bazarr
@@ -218,22 +233,24 @@
         - sonarr
         - podman
 
-    - name: Homearr podman container
+    - name: Homarr podman container
       role: podman_systemd_container
       vars:
-        container_name: homearr
-        container_image: ghcr.io/ajnart/homarr:latest
+        container_name: homarr
+        container_image: ghcr.io/homarr-labs/homarr:latest
         published_ports:
           - 7575:7575
         volumes:
-          - "{{ storage_dir }}/mediarr/homearr/configs:/app/data/configs"
-          - "{{ storage_dir }}/mediarr/homearr/icons:/app/public/icons"
-          - "{{ storage_dir }}/mediarr/homearr/data:/data"
+          - "{{ storage_dir }}/mediarr/homarr/appdata:/appdata"
+        env:
+          SECRET_ENCRYPTION_KEY: "{{ vault_homarr_encryption_key }}"
+        healthcheck:
+          enabled: false
         network: mediarr
         network_aliases:
-          - homearr
+          - homarr
       tags:
-        - homearr
+        - homarr
         - podman
 
     - name: Copyparty config

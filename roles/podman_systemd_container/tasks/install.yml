@@ -8,73 +8,87 @@
     mode: "755"
   loop: "{{ volumes | default('[]') }}"
 
-- name: Create user systemd directory
+- name: Create user quadlet directory
   become: false
   ansible.builtin.file:
-    path: ~/.config/systemd/user
+    path: ~/.config/containers/systemd
     state: directory
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: "755"
 
+- name: Stop legacy generated systemd unit
+  become: false
+  ansible.builtin.systemd:
+    name: "container-{{ container_name }}.service"
+    state: stopped
+    enabled: false
+    scope: user
+    daemon_reload: true
+  failed_when: false
+
+- name: Remove legacy generated systemd unit
+  become: false
+  ansible.builtin.file:
+    path: "~/.config/systemd/user/container-{{ container_name }}.service"
+    state: absent
+
 - name: Set healthcheck port if not explicitly defined
   ansible.builtin.set_fact:
     _healthcheck_port: "{{ published_ports[0] | regex_replace(':.*', '') if published_ports | length > 0 else '8080' }}"
-  when: healthcheck.enabled | bool
+  when: (healthcheck.enabled | default(true)) | bool
 
 - name: Set healthcheck command if not explicitly defined
   ansible.builtin.set_fact:
     _container_healthcheck_cmd: >-
       {{
-        healthcheck.cmd if healthcheck.cmd != ""
-        else "(command -v curl >/dev/null && curl -f http://localhost:" + _healthcheck_port + ") ||
-              (command -v wget >/dev/null && wget -q --spider http://localhost:" + _healthcheck_port + ") ||
-              (command -v nc >/dev/null && nc -z localhost " + _healthcheck_port + ") ||
-              exit 1"
+        (healthcheck.cmd | default('')) if (healthcheck.cmd | default('')) != ""
+        else "(command -v curl >/dev/null && curl -f http://localhost:" + _healthcheck_port + ") || (command -v wget >/dev/null && wget -q --spider http://localhost:" + _healthcheck_port + ") || (command -v nc >/dev/null && nc -z localhost " + _healthcheck_port + ") || exit 1"
       }}
-  when: healthcheck.enabled | bool
+  when: (healthcheck.enabled | default(true)) | bool
 
-- name: Create podman container
+- name: Write podman quadlet
   become: false
   containers.podman.podman_container:
-    state: present
+    state: quadlet
     name: "{{ container_name }}"
     image: "{{ container_image }}"
     pull: "{{ 'always' if update_containers | bool else 'missing' }}"
-    hostname: "{{ container_name }}-{{ ansible_hostname }}"
+    hostname: "{{ container_name }}-{{ ansible_facts['hostname'] }}"
     publish: "{{ published_ports | default(omit) }}"
     volume: "{{ volumes + shared_volumes | default(omit) }}"
     device: "{{ devices | default(omit) }}"
     group_add: "{{ group_add | default(omit) }}"
     env: "{{ env | default(omit) }}"
-    requires: "{{ requires | default(omit) }}"
+    requires: "{{ requires if (requires | default([]) | length > 0) else omit }}"
     network: "{{ network | default(omit) }}"
     network_aliases: "{{ network_aliases | default(omit) }}"
     userns: "{{ userns | default(omit) }}"
     command: "{{ command | default(omit) }}"
-    healthcheck: "{{ _container_healthcheck_cmd if healthcheck.enabled else omit }}"
-    healthcheck_interval: "{{ healthcheck.interval if healthcheck.enabled else omit }}"
-    healthcheck_timeout: "{{ healthcheck.timeout if healthcheck.enabled else omit }}"
-    healthcheck_retries: "{{ healthcheck.retries if healthcheck.enabled else omit }}"
-    healthcheck_start_period: "{{ healthcheck.start_period if healthcheck.enabled else omit }}"
-    healthcheck_failure_action: "{{ healthcheck.failure_action if healthcheck.enabled else omit }}"
-    generate_systemd:
-      path: ~/.config/systemd/user
-      restart_policy: always
-      no_header: true
-      after:
-        - network-wait.target
-      wants:
-        - network-wait.target
-
-- name: Pause for 10 secs
-  ansible.builtin.pause:
-    seconds: 10
+    healthcheck: "{{ _container_healthcheck_cmd if (healthcheck.enabled | default(true)) else omit }}"
+    healthcheck_interval: "{{ healthcheck.interval | default('30s') if (healthcheck.enabled | default(true)) else omit }}"
+    healthcheck_timeout: "{{ healthcheck.timeout | default('30s') if (healthcheck.enabled | default(true)) else omit }}"
+    healthcheck_retries: "{{ healthcheck.retries | default(3) if (healthcheck.enabled | default(true)) else omit }}"
+    healthcheck_start_period: "{{ healthcheck.start_period | default('10s') if (healthcheck.enabled | default(true)) else omit }}"
+    healthcheck_failure_action: "{{ healthcheck.failure_action | default('restart') if (healthcheck.enabled | default(true)) else omit }}"
+    quadlet_dir: ~/.config/containers/systemd
+    quadlet_filename: "container-{{ container_name }}"
+    quadlet_file_mode: "0644"
+    quadlet_options:
+      - |
+        [Unit]
+        Wants=network-wait.target
+        After=network-wait.target
+        [Service]
+        Restart=always
+        TimeoutStopSec=70
+        [Install]
+        WantedBy=default.target
 
 - name: Enable and start container on systemd
   become: false
   ansible.builtin.systemd:
-    name: "container-{{ container_name }}"
+    name: "container-{{ container_name }}.service"
     state: started
     scope: user
     daemon_reload: true
