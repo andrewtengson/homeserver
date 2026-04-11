@@ -37,9 +37,10 @@
 - name: Create podman container
   become: false
   containers.podman.podman_container:
-    state: created
+    state: present
     name: "{{ container_name }}"
     image: "{{ container_image }}"
+    pull: "{{ 'always' if update_containers | bool else 'missing' }}"
     hostname: "{{ container_name }}-{{ ansible_hostname }}"
     publish: "{{ published_ports | default(omit) }}"
     volume: "{{ volumes + shared_volumes | default(omit) }}"

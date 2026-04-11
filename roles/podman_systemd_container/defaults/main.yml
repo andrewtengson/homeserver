@@ -16,6 +16,7 @@ env: {}
 requires: []
 firewall_ports: [] # if empty, will be auto-generated from published_ports
 enable_firewall: true # set to false to skip firewall configuration
+update_containers: false # set to true to pull newer images during a run
 healthcheck: # Podman native healthcheck configuration
   enabled: true
   cmd: "" # healthcheck command (auto-generated if empty)
